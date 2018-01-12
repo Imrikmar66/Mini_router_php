@@ -1,4 +1,5 @@
 <?php 
+    require "functions.php";
 
     if( isset( $_GET["service"] ) ){
 
@@ -28,6 +29,7 @@
     switch( $page ){
 
         case "home":
+            connectionRequired();
             $page_file = "pages/home.php";
             break;
         case "login":
