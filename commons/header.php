@@ -2,13 +2,15 @@
     <head></head>
     <body>
 
-        <nav>
-            <ul>
-                <li>
-                    <a href="?page=login"> Login </a>
-                </li>
-                <li>
-                    <a href="?page=home"> Home </a>
-                </li>
-            </ul>
-        </nav>
+        <?php if( isLogged() ) { ?>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="?page=login"> Changer d'utilisateur </a>
+                    </li>
+                    <li>
+                        <a href="?page=home"> Home </a>
+                    </li>
+                </ul>
+            </nav>
+        <?php } ?>
