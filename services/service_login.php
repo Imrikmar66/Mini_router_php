@@ -24,7 +24,9 @@ if( $connected ){
 }
 else {
     // unset pour détruire une variable
-    unset($_SESSION["user"]);
+    // unset($_SESSION["user"]);
+
+    session_unset(); // Detruit toute les variables de SESSION
     
     $error = urlencode("Identifiant ou mot de passe incorrect");
     header("Location: ?page=login&error=".$error);
