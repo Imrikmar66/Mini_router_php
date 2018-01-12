@@ -1,5 +1,4 @@
 <?php
-session_start();
 define("SALT", "QWONQULqF0");
 
 $users = [
@@ -35,6 +34,9 @@ if( $connected ){
     header("Location: ?page=home");
 }
 else {
+    // unset pour détruire une variable
+    unset($_SESSION["user"]);
+    
     $error = urlencode("Identifiant ou mot de passe incorrect");
     header("Location: ?page=login&error=".$error);
 }
