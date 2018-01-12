@@ -10,3 +10,18 @@ function connectionRequired(){
     }
 
 }
+
+function debug( $arg, $printr = false ){
+    
+    if( $printr ){
+        echo "<pre>";
+        print_r($arg);
+        echo "</pre>";
+    }
+    else {
+        var_dump( $arg );
+    }
+    
+    die();
+
+}
