@@ -1,7 +1,7 @@
 <?php 
     require "functions.php";
 
-    if( isset( $_GET["service"] ) ){
+    if( isset( $_GET["service"] ) ){    
 
         $service = $_GET["service"];
 
@@ -9,6 +9,9 @@
 
             case "login": 
                 include "services/service_login.php";
+                break;
+            case "cart":
+                include "services/service_cart.php";
                 break;
             default :
                 header("Location: ?page=home");
@@ -34,6 +37,12 @@
             break;
         case "login":
             $page_file = "pages/login.php";
+            break;
+        case "shop":
+            $page_file = "pages/shop.php";
+            break;
+        case "cart":
+            $page_file = "pages/cart.php";
             break;
         default:
             $page_file = "pages/404.php";
