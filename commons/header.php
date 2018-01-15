@@ -1,5 +1,7 @@
 <html>
-    <head></head>
+    <head>
+        <meta charset="UTF-8">
+    </head>
     <body>
 
         <?php if( isLogged() ) { ?>

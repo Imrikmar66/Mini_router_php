@@ -6,6 +6,8 @@ define("DB_NAME", "shop");
 define("DB_USER", "root");
 define("DB_PASS", "root");
 
+define("PRODUCTS_BY_PAGE", 2);
+
 function isLogged(){
 
     return isset( $_SESSION["user"] );
@@ -88,38 +90,47 @@ function getUser( $username, $password ){
     // On prend le premier enregistrement ( les variables associées précédemment vont être mises à jour )
     mysqli_stmt_fetch($statement);
 
-    $user = [
-        "id" => $b_id,
-        "username" => $b_username,
-        "password" => $b_password
-    ];
+    $user = null;
+    if( $b_id ){
+        $user = [
+            "id" => $b_id,
+            "username" => $b_username,
+            "password" => $b_password
+        ];
+    }
 
     return $user;
 
 }
 
-function getProducts(){
+function getProducts( $page_index = 0 ){
 
-    $products = [
-        [
-            "name" => "rocket",
-            "price" => 15,
-            "image" => "rocket.jpg"
-        ],
-        [
-            "name" => "groot",
-            "price" => 18,
-            "image" => "groot.jpg"
-        ],
-        [
-            "name" => "starlord",
-            "price" => 12,
-            "image" => "starlord.jpg"
-        ]
-    ];
+    $connection = getConnection();
+    $sql = "SELECT * FROM products LIMIT ?, ?";
+
+    $start_index = $page_index * PRODUCTS_BY_PAGE;
+    $end_index = PRODUCTS_BY_PAGE;
+
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( $statement, "ii", $start_index, $end_index);
+    mysqli_stmt_execute( $statement );
+    mysqli_stmt_bind_result( $statement, $b_id, $b_label, $b_price, $b_image_url );
+
+    $products = [];
+    while( mysqli_stmt_fetch( $statement ) ) {
+        
+        $products[] = [
+            "id" => $b_id,
+            "label" => utf8_encode( $b_label ),
+            "price" => $b_price,
+            "image_url" => $b_image_url
+        ];
+
+    }
+    
+    mysqli_close( $connection );
 
     return $products;
-
 }
 
 function debug( $arg, $printr = false ){
@@ -137,20 +148,20 @@ function debug( $arg, $printr = false ){
 
 }
 
-$cart = [
-    [
-        "name" => "rocket",
-        "price" => 15,
-        "image" => "rocket.jpg"
-    ],
-    [
-        "name" => "groot",
-        "price" => 18,
-        "image" => "groot.jpg"
-    ]
-];
-
 // /* COOKIE */
+
+// $cart = [
+//     [
+//         "name" => "rocket",
+//         "price" => 15,
+//         "image" => "rocket.jpg"
+//     ],
+//     [
+//         "name" => "groot",
+//         "price" => 18,
+//         "image" => "groot.jpg"
+//     ]
+// ];
 
 // //JSON.stringify -> json_encode
 // $str_cart = json_encode($cart);

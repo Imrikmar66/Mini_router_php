@@ -16,7 +16,7 @@
         foreach( $_SESSION["cart"] as $key => $cart_item ){
 
             // Si l'élément existe déjà dans mon panier, je garde sa position dans le tableau en mémoire
-            if( $cart_item["name"] == $product["name"] ){
+            if( $cart_item["label"] == $product["label"] ){
                 $product_index = $key;
                 break;
             }
