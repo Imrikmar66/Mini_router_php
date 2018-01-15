@@ -6,7 +6,7 @@ define("DB_NAME", "shop");
 define("DB_USER", "root");
 define("DB_PASS", "root");
 
-define("PRODUCTS_BY_PAGE", 2);
+define("PRODUCTS_BY_PAGE", 6);
 
 function isLogged(){
 
@@ -131,6 +131,17 @@ function getProducts( $page_index = 0 ){
     mysqli_close( $connection );
 
     return $products;
+}
+
+function countProducts(){
+
+    $connection = getConnection();
+    $sql = "SELECT COUNT(*) as number FROM products";
+    $results = mysqli_query( $connection, $sql );
+    $result = mysqli_fetch_assoc( $results );
+
+    return $result["number"];
+
 }
 
 function debug( $arg, $printr = false ){

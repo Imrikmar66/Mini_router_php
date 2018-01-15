@@ -31,9 +31,9 @@
         // Génération de la liste des pages
         $html_product .= '<ul>';
 
-        $nb_pages = intval( count($products) / PRODUCTS_BY_PAGE );
-
-        for( $i=0; $i <= $nb_pages; $i++ ){
+        $nb_pages = ceil( countProducts() / PRODUCTS_BY_PAGE );
+        
+        for( $i=0; $i < $nb_pages; $i++ ){
 
             $html_product .= '<li>';
                 $html_product .= '<a href="?page=shop&index_page=' . $i .'" >' ;
