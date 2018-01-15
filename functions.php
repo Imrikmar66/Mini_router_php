@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+define("DB_HOST", "localhost");
+define("DB_NAME", "shop");
+define("DB_USER", "root");
+define("DB_PASS", "root");
+
 function isLogged(){
 
     return isset( $_SESSION["user"] );
@@ -17,20 +22,79 @@ function connectionRequired(){
 
 }
 
+function getConnection(){
+
+    $connection = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    if( $errors = mysqli_connect_error($connection) ){
+        $errors = utf8_encode($errors);
+        header("Location: ?page=login&error=" . $errors); 
+        die();
+    }
+
+    return $connection;
+
+}
+
 function getUsers(){
 
-    $users = [
-        [
-            "name" => "Pierre",
-            "password" => "e4953807b90944c5eb46ddcf68470b3ee7e76502" // sha1(starwarsQWONQULqF0)
-        ],
-        [
-            "name" => "Paul",
-            "password" => "d7c42d00268ebbcec2226ab0d8a8b42c13b68af9" // sha1(footballQWONQULqF0)
-        ]
+    // starwars
+    // football
+
+    $connection = getConnection();
+    $sql = "SELECT username, password FROM users";
+    
+    $results = mysqli_query($connection, $sql);
+
+    mysqli_close( $connection );
+    
+    $users = [];
+    
+    while( $row = mysqli_fetch_assoc($results) ){
+
+        $users[] = $row;
+
+    }
+    
+    return $users;
+
+}
+
+function getUser( $username, $password ){
+
+    // $connection = getConnection();
+
+    // $sql = "SELECT * FROM users WHERE username='" . $username . "' AND password='". $password."'";
+
+    // $results = mysqli_query( $connection, $sql );
+    // $user = mysqli_fetch_assoc( $results );
+    
+    // return $user; //null | id,name,password
+
+    $connection = getConnection();
+
+    $sql = "SELECT * FROM users WHERE username=? AND password=?";
+    // Prépare une requête avec des ? en inconnues
+    $statement = mysqli_prepare( $connection, $sql );
+
+    // Remplace les ? par les variables (+ sécurité)
+    mysqli_stmt_bind_param( $statement, "ss", $username, $password );
+
+    // Exécution de la requête
+    mysqli_stmt_execute( $statement );
+
+    // On associe des variables aux colonnes récupérées
+    mysqli_stmt_bind_result($statement, $b_id, $b_username, $b_password);
+
+    // On prend le premier enregistrement ( les variables associées précédemment vont être mises à jour )
+    mysqli_stmt_fetch($statement);
+
+    $user = [
+        "id" => $b_id,
+        "username" => $b_username,
+        "password" => $b_password
     ];
 
-    return $users;
+    return $user;
 
 }
 
@@ -72,3 +136,27 @@ function debug( $arg, $printr = false ){
     die();
 
 }
+
+$cart = [
+    [
+        "name" => "rocket",
+        "price" => 15,
+        "image" => "rocket.jpg"
+    ],
+    [
+        "name" => "groot",
+        "price" => 18,
+        "image" => "groot.jpg"
+    ]
+];
+
+// /* COOKIE */
+
+// //JSON.stringify -> json_encode
+// $str_cart = json_encode($cart);
+// echo $str_cart;
+// setcookie("TEST", $str_cart, time() + 3600*24);
+
+// //JSON.parse -> json_decode
+// $decode_cart = json_decode( $_COOKIE["TEST"] );
+// var_dump( $decode_cart );

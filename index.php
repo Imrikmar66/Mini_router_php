@@ -1,7 +1,10 @@
 <?php 
     require "functions.php";
 
-    if( isset( $_GET["service"] ) ){    
+    /* Service */
+    // mon/url.php?service=nom_du_service
+
+    if( isset( $_GET["service"] ) ){
 
         $service = $_GET["service"];
 
@@ -14,13 +17,15 @@
                 include "services/service_cart.php";
                 break;
             default :
-                header("Location: ?page=home");
+                header("Location: ?page=login");
 
         }
         
         die();
 
     }
+
+    /* Pages */
 
     $page = "home";
     $page_file = "";
@@ -39,9 +44,11 @@
             $page_file = "pages/login.php";
             break;
         case "shop":
+            connectionRequired();
             $page_file = "pages/shop.php";
             break;
         case "cart":
+            connectionRequired();
             $page_file = "pages/cart.php";
             break;
         default:

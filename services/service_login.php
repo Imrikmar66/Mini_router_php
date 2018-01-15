@@ -7,13 +7,11 @@ if( isset( $_POST["username"] ) && isset( $_POST["password"] ) ){
     $username = $_POST["username"];
     $password = sha1( $_POST["password"] . SALT );
 
-    foreach( getUsers() as $user ){
+    $user = getUser( $username, $password );
+    if( $user ){ // Teste si utilisateur trouvé avec la requete (sinon null)
 
-        if( $user["name"] == $username && $user["password"] == $password ){
-            $_SESSION["user"] = $user;
-            $connected = true;
-            break;
-        }
+        $_SESSION["user"] = $user;
+        $connected = true;
 
     }
 
