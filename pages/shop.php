@@ -1,3 +1,4 @@
+<div id="shop">
 <?php 
 
     $index_page = 0;
@@ -19,7 +20,7 @@
                 $html_product .= '<div style="border: 1px solid black; margin: 5px;">';
                     $html_product .= '<input type="checkbox" name="' . $product["label"] . '" value="' . $key . '">';
                     $html_product .= '<h4>' . $product["label"] . '</h4>';
-                    $html_product .= '<img src="assets/' . $product["image_url"] . '" width="200px" />';
+                    $html_product .= '<img src="assets/imgs/' . $product["image_url"] . '" width="200px" />';
                     $html_product .= '<p>' . $product["price"] . ' €</p>';
                 $html_product .= '</div>';  
 
@@ -51,3 +52,4 @@
         echo "<div> Aucun article trouvé ! </div>";
     }
 ?>
+</div>

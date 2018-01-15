@@ -6,7 +6,7 @@ define("DB_NAME", "shop");
 define("DB_USER", "root");
 define("DB_PASS", "root");
 
-define("PRODUCTS_BY_PAGE", 6);
+define("PRODUCTS_BY_PAGE", 2);
 
 function isLogged(){
 
@@ -99,6 +99,9 @@ function getUser( $username, $password ){
         ];
     }
 
+    mysqli_stmt_close( $statement );
+    mysqli_close( $connection );
+
     return $user;
 
 }
@@ -128,6 +131,7 @@ function getProducts( $page_index = 0 ){
 
     }
     
+    mysqli_stmt_close( $statement );
     mysqli_close( $connection );
 
     return $products;
@@ -139,8 +143,54 @@ function countProducts(){
     $sql = "SELECT COUNT(*) as number FROM products";
     $results = mysqli_query( $connection, $sql );
     $result = mysqli_fetch_assoc( $results );
+    mysqli_close( $connection );
 
     return $result["number"];
+
+}
+
+function addToCart( $id_user, $id_product ){
+
+    // Vérifier si la liaison existe
+    // Insert / Update en fonction de la présence
+
+    $connection = getConnection();
+    $sql = "SELECT COUNT(*) as number FROM carts WHERE id_user=? AND id_product=?";
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( $statement, "ii", $id_user, $id_product);
+    mysqli_stmt_execute( $statement );
+    mysqli_stmt_bind_result( $statement, $b_number );
+    mysqli_stmt_fetch($statement);
+    
+    // $b_number 0 ou 1
+    if( $b_number ){
+
+        $sql = "UPDATE carts SET quantity=quantity+1 WHERE id_user=? AND id_product=?";
+
+    }
+    else {
+        
+        // Par default, le champs quantity est configuré sur 1
+        $sql = "INSERT INTO carts (id_user, id_product) VALUES (?, ?)";
+
+    }
+
+    mysqli_stmt_close( $statement );
+
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( $statement, "ii", $id_user, $id_product);
+    mysqli_stmt_execute( $statement );
+    $error = mysqli_error( $connection );
+
+    mysqli_stmt_close( $statement );
+    mysqli_close( $connection );
+
+    if( $error ){
+        return false;
+    }
+    else {
+        return true;
+    }
 
 }
 
