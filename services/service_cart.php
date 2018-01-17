@@ -42,6 +42,7 @@
 
     if( empty( $_POST ) ){
         header("Location: ?page=home");
+        die();
     }
     else {
 
@@ -56,3 +57,4 @@
     }
 
     header("Location: ?page=cart");
+    
