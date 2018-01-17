@@ -194,6 +194,37 @@ function addToCart( $id_user, $id_product ){
 
 }
 
+function getCart( $id_user ){
+
+    $connection = getConnection();
+    $sql = "SELECT products.*, carts.quantity
+        FROM carts
+        JOIN products
+        ON carts.id_product = products.id
+        WHERE carts.id_user=?";
+    
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( $statement, 'i', $id_user );
+    mysqli_stmt_execute( $statement );
+    mysqli_stmt_bind_result( $statement, $id, $label, $price, $image_url, $quantity );
+
+    $cart = [];
+    while( mysqli_stmt_fetch( $statement ) ){
+
+        $cart[] = [
+            "id" => $id,
+            "label" => $label,
+            "price" => $price,
+            "image_url" => $image_url,
+            "quantity" => $quantity
+        ];
+
+    }
+
+    return $cart;
+
+}
+
 function debug( $arg, $printr = false ){
     
     if( $printr ){
