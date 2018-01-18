@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+define("SALT", "QWONQULqF0");
+
 define("DB_HOST", "localhost");
 define("DB_NAME", "shop");
 define("DB_USER", "root");
@@ -8,20 +10,59 @@ define("DB_PASS", "root");
 
 define("PRODUCTS_BY_PAGE", 2);
 
-function isLogged(){
+// Grants
+define("CAN_CREATE_PRODUCT", 1);
+define("CAN_UPDATE_PRODUCT", 2);
+define("CAN_DELETE_PRODUCT", 3);
 
-    return isset( $_SESSION["user"] );
+// Roles
+define("SUPER_ADMIN", 1);
+define("ADMIN", 2);
+define("USER", 3);
+
+function isLogged( $as_role = USER ){
+
+    return ( 
+        isset( $_SESSION["user"] ) 
+        && $_SESSION["user"]["id_role"] <= $as_role 
+    );
 
 }
 
-function connectionRequired(){
+function connectionRequired( $as_role = USER ){
     
     if( !isset( $_SESSION["user"] ) ){
-        
+
         header("Location: ?page=login");
         die();
     }
+    else if( !isLogged( $as_role ) ){
 
+        $error = "Vous n'avez les autorisations nécessaires !";
+        header("Location: ?page=login&error=".$error);
+        die();
+
+    }
+
+}
+
+// $_SESSION["user"] = id / username / password / id_role
+function isGranted( $id_role, $id_grant ){
+
+    $connection = getConnection();
+    $sql = "SELECT COUNT(*)
+    FROM link_role_grant
+    WHERE link_role_grant.id_role = ? 
+    AND link_role_grant.id_grant = ?";
+
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( $statement, "ii", $id_role, $id_grant );
+    mysqli_stmt_execute( $statement );
+    mysqli_stmt_bind_result( $statement, $result );
+    mysqli_stmt_fetch( $statement );
+
+    return (boolean)$result; //cast converting
+    
 }
 
 function getConnection(){
@@ -85,7 +126,7 @@ function getUser( $username, $password ){
     mysqli_stmt_execute( $statement );
 
     // On associe des variables aux colonnes récupérées
-    mysqli_stmt_bind_result($statement, $b_id, $b_username, $b_password);
+    mysqli_stmt_bind_result($statement, $b_id, $b_username, $b_password, $b_id_role);
 
     // On prend le premier enregistrement ( les variables associées précédemment vont être mises à jour )
     mysqli_stmt_fetch($statement);
@@ -95,7 +136,8 @@ function getUser( $username, $password ){
         $user = [
             "id" => $b_id,
             "username" => $b_username,
-            "password" => $b_password
+            "password" => $b_password,
+            "id_role" => $b_id_role
         ];
     }
 

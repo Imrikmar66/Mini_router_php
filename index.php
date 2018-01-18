@@ -51,6 +51,10 @@
             connectionRequired();
             $page_file = "pages/cart.php";
             break;
+        case "admin":
+            connectionRequired( ADMIN );
+            $page_file = "pages/admin.php";
+            break;
         default:
             $page_file = "pages/404.php";
 

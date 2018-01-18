@@ -1,6 +1,4 @@
 <?php
-define("SALT", "QWONQULqF0");
-
 $connected = false;
 if( isset( $_POST["username"] ) && isset( $_POST["password"] ) ){
 

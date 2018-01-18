@@ -20,6 +20,15 @@
                     <li>
                         <a href="?page=cart"> Cart </a>
                     </li>
+
+                    <?php if( isLogged( ADMIN ) ) { ?>
+
+                        <li> 
+                            <a href="?page=admin"> Admin </a>
+                        </li>
+
+                    <?php } ?>
+
                 </ul>
             </nav>
         <?php } ?>
