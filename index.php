@@ -16,6 +16,9 @@
             case "cart":
                 include "services/service_cart.php";
                 break;
+            case "create_product":
+                include "services/service_create_product.php";
+                break;
             default :
                 header("Location: ?page=login");
 

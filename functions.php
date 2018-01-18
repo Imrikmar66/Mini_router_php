@@ -20,6 +20,9 @@ define("SUPER_ADMIN", 1);
 define("ADMIN", 2);
 define("USER", 3);
 
+//Files
+define("IMAGE_MAX_SIZE", 2097152);
+
 function isLogged( $as_role = USER ){
 
     return ( 
@@ -77,6 +80,8 @@ function getConnection(){
     return $connection;
 
 }
+
+/**** USERS *****/
 
 function getUsers(){
 
@@ -148,6 +153,8 @@ function getUser( $username, $password ){
 
 }
 
+/***** PRODUCTS ******/
+
 function getProducts( $page_index = 0 ){
 
     $connection = getConnection();
@@ -190,6 +197,35 @@ function countProducts(){
     return $result["number"];
 
 }
+
+/* 
+    $product = [
+        "label",
+        "price",
+        "image_url"
+    ]
+ */
+function createProduct( $product ){
+
+    $connection = getConnection();
+    $sql = "INSERT INTO products VALUES (null, ?, ?, ?)";
+
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( 
+        $statement, 
+        "sds", 
+        $product["label"],
+        $product["price"],
+        $product["image_url"] 
+    );
+    mysqli_stmt_execute( $statement );
+    $inserted = mysqli_stmt_affected_rows( $statement );
+
+    return (boolean)$inserted;
+
+}
+
+/****** CART ******/
 
 function addToCart( $id_user, $id_product ){
 
