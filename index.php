@@ -14,9 +14,11 @@
                 include "services/service_login.php";
                 break;
             case "cart":
+                connectionRequired();
                 include "services/service_cart.php";
                 break;
             case "create_product":
+                connectionRequired( ADMIN );
                 include "services/service_create_product.php";
                 break;
             default :

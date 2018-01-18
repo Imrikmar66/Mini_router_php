@@ -221,7 +221,7 @@ function createProduct( $product ){
     mysqli_stmt_execute( $statement );
     $inserted = mysqli_stmt_affected_rows( $statement );
 
-    return (boolean)$inserted;
+    return (boolean)($inserted > 0);
 
 }
 

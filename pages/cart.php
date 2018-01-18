@@ -12,7 +12,7 @@
 
         $html_product = '<div style="border: 1px solid black; margin: 5px;">';
             $html_product .= '<h4>' . $product["label"] . '</h4>';
-            $html_product .= '<img src="assets/imgs/' . $product["image_url"] . '" width="200px" />';
+            $html_product .= '<img src="products_image/' . $product["image_url"] . '" width="200px" />';
             $html_product .= '<p>' . $price . ' €</p>';
             $html_product .= '<p> Quantity: ' . $product["quantity"] . '</p>';            
         $html_product .= '</div>';  
