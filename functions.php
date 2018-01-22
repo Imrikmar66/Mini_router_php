@@ -155,12 +155,12 @@ function getUser( $username, $password ){
 
 /***** PRODUCTS ******/
 
-function getProducts( $page_index = 0 ){
+function getProducts( $index_page = 0 ){
 
     $connection = getConnection();
     $sql = "SELECT * FROM products LIMIT ?, ?";
 
-    $start_index = $page_index * PRODUCTS_BY_PAGE;
+    $start_index = $index_page * PRODUCTS_BY_PAGE;
     $end_index = PRODUCTS_BY_PAGE;
 
     $statement = mysqli_prepare( $connection, $sql );
@@ -184,6 +184,61 @@ function getProducts( $page_index = 0 ){
     mysqli_close( $connection );
 
     return $products;
+}
+
+function getProductById( $id ){
+
+    $connection = getConnection();
+    $sql = "SELECT * FROM products WHERE id=?";
+
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( $statement, "i", $id );
+    mysqli_stmt_execute( $statement );
+    mysqli_stmt_bind_result( $statement, $id, $label, $price, $image_url );
+    mysqli_stmt_fetch( $statement );
+
+    $product = [
+        "id" => $id,
+        "label" => $label,
+        "price" => $price,
+        "image_url" => $image_url
+    ];
+
+    mysqli_stmt_close( $statement );
+    mysqli_close( $connection );
+
+    return $product;
+
+}
+
+function update_product( $id, $label, $price, $image_url = false ){
+
+    $connection = getConnection();
+    $statement;
+    
+    if( $image_url != false ){
+
+        $sql = "UPDATE products SET label=?, price=?, image_url=? WHERE id=?";
+        $statement = mysqli_prepare( $connection, $sql );
+        mysqli_stmt_bind_param( $statement, "sdsi", $label, $price, $image_url, $id );
+
+    }
+    else {
+
+        $sql = "UPDATE products SET label=?, price=? WHERE id=?";
+        $statement = mysqli_prepare( $connection, $sql );
+        mysqli_stmt_bind_param( $statement, "sdi", $label, $price, $id );
+
+    }
+
+    mysqli_stmt_execute( $statement );
+    $edited = mysqli_stmt_affected_rows( $statement );
+    
+    mysqli_stmt_close( $statement );
+    mysqli_close( $connection );
+
+    return (boolean)($edited > 0);
+
 }
 
 function countProducts(){
@@ -220,6 +275,9 @@ function createProduct( $product ){
     );
     mysqli_stmt_execute( $statement );
     $inserted = mysqli_stmt_affected_rows( $statement );
+
+    mysqli_stmt_close( $statement );
+    mysqli_close( $connection );
 
     return (boolean)($inserted > 0);
 

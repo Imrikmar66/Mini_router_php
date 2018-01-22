@@ -46,9 +46,50 @@
 
 <?php } ?>
 
-<?php if( isGranted( $id_role, CAN_UPDATE_PRODUCT ) ){ ?>
-    <!-- 
-       ****** GESTION UPDATE / DELETE DES PRODUITS ******
-    -->
+<?php 
+if( isGranted( $id_role, CAN_UPDATE_PRODUCT ) ){ 
 
-<?php } ?>
+    $index_page = 0;
+    if( isset( $_GET["index_page"] ) ){
+        $index_page = $_GET["index_page"];
+    }
+
+    /****** GESTION UPDATE ******/  
+    
+    $html_product = '';
+
+    foreach ( getProducts( $index_page ) as $product ) {
+        
+        $html_product .= '<div style="border: 1px solid black; margin: 5px;">';
+
+            $html_product .= '<h4>' . $product["label"] . '</h4>';
+            $html_product .= '<img src="products_image/' . $product["image_url"] . '" width="200px" />';
+            $html_product .= '<p>' . $product["price"] . ' €</p>';
+
+            $html_product .= '<a href="?page=update_product&id='.$product["id"].'" > Editer </a>';
+            $html_product .= '<a href="?service=delete_product&id='.$product["id"].'" > Supprimer </a>';
+
+        $html_product .= '</div>';
+
+
+    }
+
+    $nb_pages = ceil( countProducts() / PRODUCTS_BY_PAGE );
+    $html_product .= '<ul>';
+    
+    for( $i=0; $i < $nb_pages; $i++ ){
+
+        $html_product .= '<li>';
+            $html_product .= '<a href="?page=admin&index_page=' . $i .'" >' ;
+                $html_product .= ($i + 1);
+            $html_product .= '</a>';
+        $html_product .= '</li>';
+
+    }
+
+    $html_product .= '</ul>';
+
+    echo $html_product;
+    
+} 
+?>

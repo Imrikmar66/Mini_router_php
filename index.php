@@ -21,6 +21,14 @@
                 connectionRequired( ADMIN );
                 include "services/service_create_product.php";
                 break;
+            case "update_product":
+                connectionRequired( ADMIN );
+                include "services/service_update_product.php";
+                break;
+            case "delete_product":
+                connectionRequired( SUPER_ADMIN );
+                include "service/service_delete_product.php";
+                break;
             default :
                 header("Location: ?page=login");
 
@@ -59,6 +67,10 @@
         case "admin":
             connectionRequired( ADMIN );
             $page_file = "pages/admin.php";
+            break;
+        case "update_product":
+            connectionRequired( ADMIN );
+            $page_file = "pages/update_product.php";
             break;
         default:
             $page_file = "pages/404.php";
