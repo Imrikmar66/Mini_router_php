@@ -68,7 +68,7 @@ if( isGranted( $id_role, CAN_UPDATE_PRODUCT ) ){
 
             $html_product .= '<a href="?page=update_product&id='.$product["id"].'" > Editer </a>';
             
-            if( isGranted( CAN_DELETE_PRODUCT ) ) {
+            if( isGranted( $id_role, CAN_DELETE_PRODUCT ) ) {
                 $html_product .= '<a href="?service=delete_product&id='.$product["id"].'" > Supprimer </a>';
             }
 
