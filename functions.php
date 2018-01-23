@@ -232,12 +232,31 @@ function update_product( $id, $label, $price, $image_url = false ){
     }
 
     mysqli_stmt_execute( $statement );
+
+    // -1 erreur | 0 aucun changement | > 0 nombre de lignes affectées
     $edited = mysqli_stmt_affected_rows( $statement );
     
     mysqli_stmt_close( $statement );
     mysqli_close( $connection );
 
-    return (boolean)($edited > 0);
+    return $edited;
+
+}
+
+function deleteProductById( $id ){
+
+    $connection = getConnection();
+    $sql = "DELETE FROM products WHERE id=?";
+    $statement = mysqli_prepare( $connection, $sql );
+    mysqli_stmt_bind_param( $statement, "i", $id );
+    mysqli_stmt_execute( $statement );
+    
+    $deleted = mysqli_stmt_affected_rows( $statement );
+
+    mysqli_stmt_close( $statement );
+    mysqli_close( $connection );
+
+    return (boolean)($deleted > 0);
 
 }
 

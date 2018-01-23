@@ -51,6 +51,7 @@ if( isset( $_GET["id"] )
     }
     else {
 
+        $response;
         if( $update_image ){
 
             $name = pathinfo( $image["name"], PATHINFO_FILENAME );
@@ -58,22 +59,32 @@ if( isset( $_GET["id"] )
 
             $image_name = uniqid( $name . "_" ) . "." . $ext;
 
-            if( update_product( $id, $label, $price, $image_name ) ) {
+            $response = update_product( $id, $label, $price, $image_name );
+
+            if( $response > 0 ) {
                 move_uploaded_file( $image["tmp_name"], "products_image/" . $image_name );
                 $message = "Le produit a été mis à jour";
+            }
+            else if( $response === 0 ) {
+                $message = "Aucun changement ou produit non trouvé";
             }  
             else {
-                $message = "Erreur lors de l'insertion";
+                $message = "Erreur lors de la mise a jour";
             }
 
         }
         else {
 
-            if( update_product( $id, $label, $price ) ) {
+            $response = update_product( $id, $label, $price );
+
+            if( $response > 0 ) {
                 $message = "Le produit a été mis à jour";
             }
+            else if( $response === 0 ){
+                $message = "Aucun changement ou produit non trouvé";
+            }
             else {
-                $message = "Erreur lors de l'insertion";
+                $message = "Erreur lors de la mise a jour";
             }
 
         }

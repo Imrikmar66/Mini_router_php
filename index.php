@@ -27,7 +27,7 @@
                 break;
             case "delete_product":
                 connectionRequired( SUPER_ADMIN );
-                include "service/service_delete_product.php";
+                include "services/service_delete_product.php";
                 break;
             default :
                 header("Location: ?page=login");
